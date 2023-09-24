@@ -209,6 +209,21 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  {
+    "mfussenegger/nvim-jdtls",
+    dependencies = { "folke/which-key.nvim" },
+    ft = "java",
+    config = function()
+      local opts = Util.opts("nvim-jdtls") or {}
+      local config = {
+          -- cmd = {'/path/to/jdt-language-server/bin/jdtls'},
+          root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+
+      }
+      require('jdtls').start_or_attach(config)
+    end
+  }
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -447,13 +462,21 @@ end
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-
+  clangd = {},
+  gopls = {},
+  pyright = {},
+  rust_analyzer = {},
+  tsserver = {},
+  bashls = {},
+  jsonls = {},
+  yamlls = {},
+  jdtls = {
+    filetypes = {'java'},
+    jdtls = function()
+      return true -- avoid duplicate servers
+    end,
+  },
+  html = { filetypes = { 'html', 'twig', 'hbs'} },
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
